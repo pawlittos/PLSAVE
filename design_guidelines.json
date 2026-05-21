@@ -1,0 +1,87 @@
+{
+  "theme": "Light",
+  "archetype": "Archetype 1: Organic & Earthy",
+  "design_philosophy": "A premium, distinctive personal finance dashboard avoiding generic SaaS aesthetics. Focuses on 'Balance-first hierarchy' and calm, confident UI. Uses warm, matte surfaces with high contrast typography to make tracking money feel motivating and elegant.",
+  "typography": {
+    "heading_font": "Outfit",
+    "body_font": "Manrope",
+    "hierarchy": {
+      "h1": "text-4xl sm:text-5xl lg:text-6xl tracking-tighter font-light",
+      "h2": "text-2xl sm:text-3xl lg:text-4xl tracking-tight",
+      "h3": "text-xl sm:text-2xl",
+      "body": "text-base leading-relaxed",
+      "small_labels": "text-xs tracking-[0.2em] uppercase font-bold text-gray-500"
+    }
+  },
+  "color_palette": {
+    "background": "#F4F1ED",
+    "surface": "#FFFFFF",
+    "primary": "#1E3A2F",
+    "primary_hover": "#2B4C3B",
+    "secondary": "#E07A5F",
+    "secondary_hover": "#D06A4F",
+    "accent_terracotta": "#E07A5F",
+    "accent_ochre": "#F2CC8F",
+    "text_main": "#1A1A1A",
+    "text_muted": "#6E6B68",
+    "border": "#E5E0D8",
+    "success": "#3E5743",
+    "danger": "#B84A43"
+  },
+  "spacing_and_layout": {
+    "grid_system": "MODE B: THE CONTROL ROOM GRID (grid-cols-1 md:grid-cols-3 lg:grid-cols-4) with tight gaps (gap-4 or gap-6).",
+    "card_padding": "p-6 or p-8 for luxurious spacing.",
+    "radius": "rounded-2xl for an organic, tactile feel.",
+    "alignment": "Left-align dense content and numbers. Optically align icons inside buttons."
+  },
+  "surfaces_and_micro_themes": {
+    "cards": "Flat background, 1px subtle border (border-border), no default shadow. Hover: slight lift (-translate-y-1), subtle shadow-lg, border darkens.",
+    "header": "Solid Background (#F4F1ED) with a hard bottom border, or Crystal Glass (backdrop-blur-xl bg-white/70) if sticky.",
+    "ai_chat": "Solid organic shapes. User bubble in warm sand, AI bubble in deep forest green. No purple/teal AI gradients."
+  },
+  "components": {
+    "buttons": "Generous padding, tracking-wide. Primary buttons use deep forest green with bone white text.",
+    "inputs": "Shadcn components heavily customized: 1px border, focus:ring-1 focus:ring-[#1E3A2F] focus:border-[#1E3A2F].",
+    "charts": "Recharts. Line chart for trends (monochrome lines: forest green for income, terracotta for expenses). Pie chart for categories using earthy palette (sage, terracotta, ochre, sand).",
+    "progress_bars": "Custom Shadcn Progress. Background: #E5E0D8, Indicator: #1E3A2F (turn #B84A43 if limit exceeded)."
+  },
+  "motion_and_interactions": {
+    "hover_states": "Buttons and cards elevate subtly. Text colors explicitly set on hover.",
+    "transitions": "transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease",
+    "chart_animations": "Smooth entry animations for pie and line charts."
+  },
+  "icons": {
+    "library": "@phosphor-icons/react",
+    "style": "Duotone weight for a high-end, premium feel."
+  },
+  "media": {
+    "image_urls": [
+      {
+        "url": "https://images.pexels.com/photos/3598433/pexels-photo-3598433.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "category": "user_avatar",
+        "description": "User profile avatar in the header"
+      },
+      {
+        "url": "https://static.prod-images.emergentagent.com/jobs/8c0f889c-5a73-423d-a681-cb9169133933/images/0ce5c6966ee37a667ab9bbc4dbda7b59142cd82a231cc367c26ec630987ddfde.png",
+        "category": "empty_state_illustration",
+        "description": "Premium 3D wealth illustration for empty states (e.g., no transactions yet) or AI assistant greeting."
+      }
+    ]
+  },
+  "instructions_to_main_agent": [
+    "Build a single-page dashboard application. Use Polish language (PLN / zł) for all UI text.",
+    "Implement 'Balance-first hierarchy': The main balance should be massive (text-5xl or 6xl) at the top of the dashboard.",
+    "Create a modular bento-grid layout for features: Recent Transactions, Monthly Budget Limits, Expenses Breakdown (Pie Chart), and Recurring Subscriptions.",
+    "Integrate an AI chat component (floating or embedded) for financial advice. Style it using the earthy color palette (no purple/teal). Use the 'empty_state_illustration' for the AI's avatar or empty state.",
+    "Ensure all interactive elements and key text nodes include data-testid attributes (e.g., data-testid='main-balance', data-testid='add-transaction-btn', data-testid='ai-chat-input').",
+    "Customize Shadcn UI heavily to match the Organic & Earthy palette. Remove default Vercel-like styles.",
+    "Use Recharts for the financial data visualization. Apply the custom color palette to the charts.",
+    "Use @phosphor-icons/react (Duotone) for all iconography.",
+    "Ensure the UI feels 'calm and premium' with generous padding (p-6, p-8) and soft radii (rounded-2xl) for cards.",
+    "Use .js/.jsx extensions for components, strictly adhering to standard React usage."
+  ],
+  "accessibility": {
+    "contrast": "Ensure APCA/WCAG AA contrast ratios, especially for the light background and muted text elements.",
+    "focus": "All actionable items must have high-contrast focus rings (focus:ring-2 focus:ring-[#1E3A2F] focus:ring-offset-2)."
+  }
+}
