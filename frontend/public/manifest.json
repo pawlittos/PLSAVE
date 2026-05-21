@@ -1,0 +1,32 @@
+{
+  "name": "BalansPLN — budżet miesięczny",
+  "short_name": "BalansPLN",
+  "description": "Aplikacja do balansowania miesięcznych wydatków w PLN z asystentem AI",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#F4F1ED",
+  "theme_color": "#1E3A2F",
+  "lang": "pl",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

@@ -106,6 +106,37 @@ class AIChatRequest(BaseModel):
     month: Optional[str] = None  # YYYY-MM context
 
 
+class Goal(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    target_amount: float
+    current_amount: float = 0.0
+    deadline: Optional[str] = None  # ISO date YYYY-MM-DD
+    color: str = "#1E3A2F"
+    icon: str = "Target"
+    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+
+class GoalCreate(BaseModel):
+    name: str
+    target_amount: float
+    current_amount: float = 0.0
+    deadline: Optional[str] = None
+    color: str = "#1E3A2F"
+    icon: str = "Target"
+
+class GoalUpdate(BaseModel):
+    name: Optional[str] = None
+    target_amount: Optional[float] = None
+    current_amount: Optional[float] = None
+    deadline: Optional[str] = None
+    color: Optional[str] = None
+    icon: Optional[str] = None
+
+class GoalContribute(BaseModel):
+    amount: float
+
+
 # ---------- Helpers ----------
 
 DEFAULT_CATEGORIES = [
@@ -395,6 +426,48 @@ async def ai_chat(payload: AIChatRequest):
     ai_msg = AIMessage(role="assistant", content=str(reply_text))
     await db.ai_messages.insert_one(ai_msg.model_dump())
     return ai_msg
+
+
+# ---------- Goals ----------
+
+@api_router.get("/goals", response_model=List[Goal])
+async def list_goals():
+    docs = await db.goals.find({}, {"_id": 0}).sort("created_at", -1).to_list(200)
+    return docs
+
+@api_router.post("/goals", response_model=Goal)
+async def create_goal(payload: GoalCreate):
+    g = Goal(**payload.model_dump())
+    await db.goals.insert_one(g.model_dump())
+    return g
+
+@api_router.put("/goals/{goal_id}", response_model=Goal)
+async def update_goal(goal_id: str, payload: GoalUpdate):
+    existing = await db.goals.find_one({"id": goal_id}, {"_id": 0})
+    if not existing:
+        raise HTTPException(404, "Goal not found")
+    updates = {k: v for k, v in payload.model_dump().items() if v is not None}
+    if updates:
+        await db.goals.update_one({"id": goal_id}, {"$set": updates})
+        existing.update(updates)
+    return existing
+
+@api_router.post("/goals/{goal_id}/contribute", response_model=Goal)
+async def contribute_to_goal(goal_id: str, payload: GoalContribute):
+    existing = await db.goals.find_one({"id": goal_id}, {"_id": 0})
+    if not existing:
+        raise HTTPException(404, "Goal not found")
+    new_amount = max(0.0, float(existing.get("current_amount", 0)) + float(payload.amount))
+    await db.goals.update_one({"id": goal_id}, {"$set": {"current_amount": new_amount}})
+    existing["current_amount"] = new_amount
+    return existing
+
+@api_router.delete("/goals/{goal_id}")
+async def delete_goal(goal_id: str):
+    res = await db.goals.delete_one({"id": goal_id})
+    if res.deleted_count == 0:
+        raise HTTPException(404, "Goal not found")
+    return {"ok": True}
 
 
 # ---------- Health ----------

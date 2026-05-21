@@ -4,6 +4,7 @@ import AddTransactionDialog from "@/components/AddTransactionDialog";
 import TransactionsCard from "@/components/TransactionsCard";
 import BudgetsCard from "@/components/BudgetsCard";
 import RecurringCard from "@/components/RecurringCard";
+import GoalsCard from "@/components/GoalsCard";
 import { CategoryPieCard, TrendCard } from "@/components/Charts";
 import AIChat from "@/components/AIChat";
 import {
@@ -20,16 +21,18 @@ export default function Dashboard() {
   const [transactions, setTransactions] = useState([]);
   const [budgets, setBudgets] = useState([]);
   const [recurring, setRecurring] = useState([]);
+  const [goals, setGoals] = useState([]);
   const [summary, setSummary] = useState({ income: 0, expenses: 0, balance: 0 });
   const [trend, setTrend] = useState([]);
 
   const loadAll = useCallback(async () => {
     try {
-      const [cats, txs, buds, recs, sum, tr] = await Promise.all([
+      const [cats, txs, buds, recs, gls, sum, tr] = await Promise.all([
         api.get("/categories"),
         api.get(`/transactions?month=${month}`),
         api.get(`/budgets?month=${month}`),
         api.get("/recurring"),
+        api.get("/goals"),
         api.get(`/summary?month=${month}`),
         api.get("/trend?months=6"),
       ]);
@@ -37,6 +40,7 @@ export default function Dashboard() {
       setTransactions(txs.data);
       setBudgets(buds.data);
       setRecurring(recs.data);
+      setGoals(gls.data);
       setSummary(sum.data);
       setTrend(tr.data);
     } catch (e) {
@@ -183,6 +187,10 @@ export default function Dashboard() {
               onChange={loadAll}
               month={month}
             />
+          </div>
+
+          <div className="lg:col-span-3">
+            <GoalsCard goals={goals} onChange={loadAll} />
           </div>
         </section>
 

@@ -1,10 +1,45 @@
+import { useState, useMemo } from "react";
 import { fmtPLN } from "@/lib/api";
-import { Trash } from "@phosphor-icons/react";
+import { Trash, MagnifyingGlass } from "@phosphor-icons/react";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function TransactionsCard({ transactions, categories, onChange }) {
   const catMap = Object.fromEntries(categories.map((c) => [c.id, c]));
+  const [query, setQuery] = useState("");
+  const [filter, setFilter] = useState("all"); // all | income | expense | <category_id>
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return transactions.filter((t) => {
+      if (filter === "income" && t.type !== "income") return false;
+      if (filter === "expense" && t.type !== "expense") return false;
+      if (
+        filter !== "all" &&
+        filter !== "income" &&
+        filter !== "expense" &&
+        t.category_id !== filter
+      )
+        return false;
+      if (!q) return true;
+      const desc = (t.description || "").toLowerCase();
+      const catName = (catMap[t.category_id]?.name || "").toLowerCase();
+      return (
+        desc.includes(q) ||
+        catName.includes(q) ||
+        String(t.amount).includes(q) ||
+        t.date.includes(q)
+      );
+    });
+  }, [transactions, query, filter, catMap]);
 
   const remove = async (id) => {
     try {
@@ -17,7 +52,7 @@ export default function TransactionsCard({ transactions, categories, onChange })
 
   return (
     <div className="balans-card" data-testid="transactions-card">
-      <div className="mb-5 flex items-center justify-between">
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h3 className="font-display text-lg tracking-tight">Transakcje</h3>
           <p className="text-xs text-[color:var(--balans-muted)]">
@@ -25,8 +60,48 @@ export default function TransactionsCard({ transactions, categories, onChange })
           </p>
         </div>
         <span className="balans-label" data-testid="transactions-count">
-          {transactions.length} pozycji
+          {filtered.length} / {transactions.length}
         </span>
+      </div>
+
+      <div className="mb-3 flex flex-col gap-2 sm:flex-row">
+        <div className="relative flex-1">
+          <MagnifyingGlass
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-[color:var(--balans-muted)]"
+            size={14}
+          />
+          <Input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Szukaj opisu, kategorii, kwoty..."
+            className="rounded-xl border-[color:var(--balans-border)] pl-9 text-sm"
+            data-testid="transactions-search-input"
+          />
+        </div>
+        <Select value={filter} onValueChange={setFilter}>
+          <SelectTrigger
+            className="rounded-xl sm:w-48 border-[color:var(--balans-border)]"
+            data-testid="transactions-filter-select"
+          >
+            <SelectValue placeholder="Filtruj" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Wszystkie</SelectItem>
+            <SelectItem value="income">Tylko przychody</SelectItem>
+            <SelectItem value="expense">Tylko wydatki</SelectItem>
+            {categories.map((c) => (
+              <SelectItem key={c.id} value={c.id}>
+                <span className="inline-flex items-center gap-2">
+                  <span
+                    className="inline-block h-2 w-2 rounded-full"
+                    style={{ background: c.color }}
+                  />
+                  {c.name}
+                </span>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <div
@@ -44,7 +119,15 @@ export default function TransactionsCard({ transactions, categories, onChange })
           </div>
         )}
 
-        {transactions.map((t) => {
+        {transactions.length > 0 && filtered.length === 0 && (
+          <div className="py-10 text-center">
+            <p className="text-sm text-[color:var(--balans-muted)]">
+              Brak wyników dla wybranego filtru.
+            </p>
+          </div>
+        )}
+
+        {filtered.map((t) => {
           const cat = catMap[t.category_id];
           const isIncome = t.type === "income";
           return (

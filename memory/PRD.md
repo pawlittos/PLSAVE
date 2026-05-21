@@ -16,6 +16,11 @@
 - **Design**: Outfit (headings) + Manrope (body), earthy palette, bento-grid dashboard, rounded-2xl cards
 - **Storage**: MongoDB collections - categories, transactions, budgets, recurring, ai_messages
 
+## Implemented (Iteration 2 - Feb 2026)
+- **Goals (Cele oszczędnościowe)**: Backend endpoints `/api/goals` (GET/POST/PUT/DELETE) and `/api/goals/{id}/contribute`. Frontend `GoalsCard` with progress bars, color picker, deadline, and contribute dialog (supports negative amounts for withdrawals).
+- **Transaction filtering & search**: `TransactionsCard` upgraded with search input (matches description, category, amount, date) and category/type filter dropdown.
+- **PWA support**: Added `manifest.json`, generated PNG icons (192, 512, maskable, apple-touch, favicon) via `/app/scripts/make_pwa_icons.py`, updated `public/index.html` with proper meta tags (theme-color #1E3A2F, apple-mobile-web-app-capable, Polish lang, real title). Users can now "Add to Home Screen" on Android/iOS.
+
 ## Implemented (Iteration 1 - Feb 2026)
 ### Backend Endpoints
 - `GET/POST/DELETE /api/categories` - 9 seeded Polish defaults (Wynajem, Zakupy, Opłaty, Subskrypcje, Transport, Rozrywka, Zdrowie, Jedzenie, Inne)
